@@ -1,0 +1,68 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="well">
+            <h3 style="margin-top: 0">Balance:</h3>
+            <h1>{{ balance }} pts.</h1>
+        </div>
+
+        <div class="well">
+            <h3 style="margin-top: 0">New Task</h3>
+            <form action="{% url 'home' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">{{ form }}</div>
+                <button type="submit" class="btn btn-primary">Create new task</button>
+            </form>
+        </div>
+
+        <div class="well">
+            <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <input type="submit" class="btn btn-warning" value="Logout">
+              {% if user.is_superuser %}
+                  <a href="/admin" class="btn btn-primary">Go to Admin</a>
+              {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-9 well" style="min-height: 600px;">
+        <h2 style="margin-top: 0">Tasks: {{ tasks.count }}</h2>
+        <table class="table table-condensed">
+              <tr>
+                  <th style="width: 14%;">Task name</th>
+                  <th style="width: 22%;">Uploaded</th>
+                  <th style="width: 22%;">Done</th>
+                  <th>Result</th>
+                  <th>Data</th>
+              </tr>
+              {% for task in tasks %}
+                  <tr {% if task.computed %}class="success"{% endif %}>
+                    <td>{{ task.task_name }}</td>
+                    <td>{{ task.create_date }}</td>
+                    <td>{% if task.computed %}{{ task.assignment.last_update }}{% else %}Computing...{% endif %}</td>
+                    <td>{% if task.computed %}
+                        <form method="get" action="{% url 'customer-get-result' %}">
+                            <input type="hidden" value="{{ task.task_name }}" name="task_name">
+                            <input type="submit" class="btn btn-primary btn-small" value="Download">
+                        </form>
+                        {% else %}Computing...{% endif %}
+                    </td>
+                    <td>
+                        <form method="get" action="{% url 'customer-get-script' %}">
+                            <input type="hidden" value="{{ task.task_name }}" name="task_name">
+                            <input type="submit" class="btn btn-default btn-small" value="Script" style="float: left;">
+                        </form>
+                        <form method="get" action="{% url 'customer-get-data' %}">
+                            <input type="hidden" value="{{ task.task_name }}" name="task_name">
+                            <input type="submit" class="btn btn-default btn-small" value="CSV" style="float: left; margin-left: 10px;">
+                        </form>
+                    </td>
+                  </tr>
+              {% empty %}
+                  <tr><td colspan="5">No tasks has been submitted yet.</td></tr>
+              {% endfor %}
+          </table>
+    </div>
+</div>
+
+

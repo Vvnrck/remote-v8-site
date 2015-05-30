@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block main %}
+    {% if user.is_authenticated %}
+        {% include '_customer_dashboard.html' %}
+    {% else %}
+        {% include '_welcome_screen.html' %}
+    {% endif %}
+{% endblock %}
