@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "app_type": "django",
+    "wsgi_app": "remoteV8Site.wsgi:application"
+  }
+}

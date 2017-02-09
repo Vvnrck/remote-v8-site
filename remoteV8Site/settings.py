@@ -57,13 +57,24 @@ WSGI_APPLICATION = 'remoteV8Site.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.environ.get('POSTGREAVAILABLE'):
+    DATABASES = {
+        'default': {
+	        'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'pgsuperuser',
+            'PASSWORD': 'pgsuperuserpassword',
+            'HOST': 'db',
+            'PORT': 5432,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -83,6 +94,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'website/templates'),
